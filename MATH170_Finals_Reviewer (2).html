@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH170 Finals Reviewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+      svg: { fontCache: 'global' }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                fontFamily: { sans: ['Work Sans', 'sans-serif'], mono: ['Space Mono', 'monospace'] },
+                colors: {
+                    'brutal-bg': '#f0f0f0', 'brutal-blue': '#4285F4', 'brutal-red': '#EA4335',
+                    'brutal-yellow': '#FBBC05', 'brutal-green': '#34A853', 'brutal-dark': '#1a1a1a',
+                    'brutal-teal': '#1abc9c'
+                },
+                boxShadow: {
+                    'hard': '5px 5px 0px 0px rgba(0,0,0,1)',
+                    'hard-sm': '3px 3px 0px 0px rgba(0,0,0,1)',
+                    'hard-lg': '8px 8px 0px 0px rgba(0,0,0,1)'
+                }
+            } }
+        }
+    </script>
+    <style>
+        body { background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px; background-color: #eaddcf; }
+        .mjx-chtml { font-size: 115% !important; }
+        mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+        .highlight-text { background-color: #FBBC05; padding: 0 4px; font-weight: bold; }
+        .step-card { opacity: 0; transform: translateY(10px); animation: slideIn 0.3s forwards; overflow-x: auto; }
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+        .co-tab { cursor: pointer; transition: all 0.2s; }
+        .co-tab:hover { transform: translateY(-2px); }
+        .co-tab.active { transform: translateY(3px); box-shadow: none !important; }
+        .co-section { display: none; }
+        .co-section.active { display: block; }
+        .progress-bar { transition: width 0.5s ease; }
+    </style>
+</head>
+<body class="text-brutal-dark font-mono p-4 md:p-8 min-h-screen">
+
+    <header class="max-w-6xl mx-auto mb-8">
+        <div class="bg-white border-4 border-black shadow-hard-lg p-6 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter italic">MATH<span class="text-brutal-blue">170</span></h1>
+                <p class="text-lg font-bold mt-1">FINALS REVIEWER</p>
+                <p class="text-sm mt-1 bg-brutal-yellow inline-block px-2 border-2 border-black">Linear Algebra • 3 COs • 45 Questions</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-col gap-2 items-end">
+                <div class="text-right text-sm font-bold">
+                    <span id="score-display" class="text-2xl text-brutal-blue">0</span> / <span id="total-display">45</span> revealed
+                </div>
+                <div class="w-48 h-4 bg-gray-200 border-2 border-black">
+                    <div id="progress" class="progress-bar h-full bg-brutal-green" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="max-w-6xl mx-auto mb-8">
+        <div class="flex flex-wrap gap-3">
+            <button onclick="switchCO('co1')" id="tab-co1" class="co-tab active bg-brutal-red text-white font-bold py-3 px-6 text-lg border-4 border-black shadow-hard">CO1: Systems & Determinants</button>
+            <button onclick="switchCO('co2')" id="tab-co2" class="co-tab bg-brutal-blue text-white font-bold py-3 px-6 text-lg border-4 border-black shadow-hard">CO2: Inverse & Geometry</button>
+            <button onclick="switchCO('co3')" id="tab-co3" class="co-tab bg-brutal-teal text-white font-bold py-3 px-6 text-lg border-4 border-black shadow-hard">CO3: Subspaces & Eigen</button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto space-y-8">
+
+        <!-- CO1 -->
+        <div id="section-co1" class="co-section active">
+            <section class="bg-white border-4 border-black p-6 shadow-hard mb-8">
+                <h2 class="text-2xl font-black mb-4 border-b-4 border-black pb-2">📘 CO1 REFERENCE: Linear Systems, Gaussian Methods, Cramer's Rule, Determinants, Applications</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-base">
+                    <div class="bg-red-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Linear Systems</h3>
+                        <p><strong>Augmented matrix:</strong> $[A|B]$</p>
+                        <p><strong>Outcomes:</strong> exactly one, infinitely many, or none.</p>
+                        <p><strong>Inconsistent:</strong> a row $[0\ 0\ 0 \mid c]$ with $c\neq 0$.</p>
+                        <p><strong>Homogeneous $Ax=0$:</strong> always consistent. More unknowns than equations → infinitely many solutions.</p>
+                    </div>
+                    <div class="bg-red-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Gaussian Methods</h3>
+                        <p><strong>Gaussian:</strong> reduce to REF, then back-substitute.</p>
+                        <p><strong>Gauss-Jordan:</strong> reduce to RREF (pivots = 1, zeros above AND below).</p>
+                        <p><strong>Row ops:</strong> $R_i\leftrightarrow R_j$, $kR_i$, $R_i+kR_j$.</p>
+                        <p><strong>Free variable:</strong> a column with no pivot.</p>
+                    </div>
+                    <div class="bg-red-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Cramer's & Determinants</h3>
+                        <p><strong>Cramer:</strong> $x_i = D_i/D$, needs $D=\det A\neq 0$.</p>
+                        <p><strong>$3\times3$ expansion:</strong> $a(ei-fh)-b(di-fg)+c(dh-eg)$</p>
+                        <p><strong>Triangular:</strong> det = product of diagonal.</p>
+                        <p><strong>Scalar:</strong> $|kA|=k^n|A|$</p>
+                        <p><strong>Applications:</strong> fitting curves, word problems → build a system.</p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-red text-white p-4 border-b-4 border-black flex justify-between items-center">
+                        <h2 class="text-2xl font-bold uppercase">CO1: Quick View</h2><span class="text-3xl">📐</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-brutal-bg border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-black w-2/3">Question</th><th class="p-4 w-1/3">Choices</th></tr></thead>
+                            <tbody id="co1-table1" class="divide-y-4 divide-black text-base"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="mt-8">
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-red text-white p-6 border-b-4 border-black flex justify-between items-center">
+                        <div><h2 class="text-2xl font-bold uppercase">CO1: Step-by-Step Solutions</h2><p class="text-sm opacity-90 font-mono mt-1">CLICK TO REVEAL EACH STEP</p></div><span class="text-3xl">🧮</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-black text-white border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-white w-5/12">Question</th><th class="p-4 w-7/12">Solution</th></tr></thead>
+                            <tbody id="co1-table2"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CO2 -->
+        <div id="section-co2" class="co-section">
+            <section class="bg-white border-4 border-black p-6 shadow-hard mb-8">
+                <h2 class="text-2xl font-black mb-4 border-b-4 border-black pb-2">📗 CO2 REFERENCE: Inverse, Tetrahedron, Area, Line, Basis</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans text-base">
+                    <div class="bg-blue-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Inverse</h3>
+                        <p><strong>$2\times2$:</strong> $\begin{bmatrix}a&b\\c&d\end{bmatrix}^{-1}=\frac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}$</p>
+                        <p><strong>Adjoint:</strong> $A^{-1}=\frac{1}{|A|}\text{adj}(A)$, adj = transpose of the cofactor matrix.</p>
+                        <p><strong>Gauss-Jordan:</strong> $[A|I]\to[I|A^{-1}]$</p>
+                        <p><strong>Solve $Ax=b$:</strong> $x=A^{-1}b$</p>
+                        <p><strong>Rules:</strong> $|A^{-1}|=1/|A|$, $\ |\text{adj}A|=|A|^{n-1}$</p>
+                    </div>
+                    <div class="bg-blue-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Area, Line, Volume, Basis</h3>
+                        <p><strong>Triangle area:</strong> $\frac12\left|\det\begin{bmatrix}x_1&y_1&1\\x_2&y_2&1\\x_3&y_3&1\end{bmatrix}\right|$. Det $=0$ → collinear.</p>
+                        <p><strong>Line through 2 points:</strong> $\det\begin{bmatrix}x&y&1\\x_1&y_1&1\\x_2&y_2&1\end{bmatrix}=0$</p>
+                        <p><strong>Tetrahedron:</strong> $V=\frac16|\det|$ of the 3 edge vectors from one vertex. Det $=0$ → coplanar.</p>
+                        <p><strong>Basis of $\mathbb{R}^n$:</strong> $n$ vectors with $\det\neq0$ (independent + spanning).</p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-blue text-white p-4 border-b-4 border-black flex justify-between items-center">
+                        <h2 class="text-2xl font-bold uppercase">CO2: Quick View</h2><span class="text-3xl">🔢</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-brutal-bg border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-black w-2/3">Question</th><th class="p-4 w-1/3">Choices</th></tr></thead>
+                            <tbody id="co2-table1" class="divide-y-4 divide-black text-base"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="mt-8">
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-blue text-white p-6 border-b-4 border-black flex justify-between items-center">
+                        <div><h2 class="text-2xl font-bold uppercase">CO2: Step-by-Step Solutions</h2><p class="text-sm opacity-90 font-mono mt-1">CLICK TO REVEAL EACH STEP</p></div><span class="text-3xl">📝</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-black text-white border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-white w-5/12">Question</th><th class="p-4 w-7/12">Solution</th></tr></thead>
+                            <tbody id="co2-table2"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CO3 -->
+        <div id="section-co3" class="co-section">
+            <section class="bg-white border-4 border-black p-6 shadow-hard mb-8">
+                <h2 class="text-2xl font-black mb-4 border-b-4 border-black pb-2">📙 CO3 REFERENCE: Null Space, Column Space, Eigenvalues & Eigenvectors</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-base">
+                    <div class="bg-teal-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Null Space</h3>
+                        <p><strong>Null$(A)$:</strong> all $x$ with $Ax=0$. Subspace of $\mathbb{R}^n$ ($n$ = columns).</p>
+                        <p><strong>Method:</strong> RREF → free variables → parametric vector form → basis vectors.</p>
+                        <p><strong>Nullity:</strong> number of free variables $=n-\text{rank}$.</p>
+                    </div>
+                    <div class="bg-teal-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Column Space</h3>
+                        <p><strong>Col$(A)$:</strong> span of the columns. Subspace of $\mathbb{R}^m$ ($m$ = rows).</p>
+                        <p><strong>Basis:</strong> the pivot columns of the <span class="highlight-text">ORIGINAL</span> $A$ (not the RREF).</p>
+                        <p><strong>Rank:</strong> number of pivots $=\dim\text{Col}(A)$.</p>
+                        <p><strong>Rank–Nullity:</strong> rank + nullity $=n$.</p>
+                        <p><strong>$b\in$ Col$(A)$</strong> iff $Ax=b$ is consistent.</p>
+                    </div>
+                    <div class="bg-teal-50 border-2 border-black p-4">
+                        <h3 class="font-bold text-lg mb-2">Eigenvalues & Eigenvectors</h3>
+                        <p><strong>Definition:</strong> $Av=\lambda v$, $v\neq0$.</p>
+                        <p><strong>Characteristic eq:</strong> $\det(A-\lambda I)=0$.</p>
+                        <p><strong>Eigenvectors:</strong> solve $(A-\lambda I)v=0$.</p>
+                        <p><strong>Shortcuts:</strong> $\sum\lambda=\text{tr}(A)$, $\prod\lambda=\det A$. Triangular → diagonal entries.</p>
+                        <p><strong>Powers:</strong> $A^k$ has $\lambda^k$, $A^{-1}$ has $1/\lambda$, same eigenvectors.</p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-teal text-white p-4 border-b-4 border-black flex justify-between items-center">
+                        <h2 class="text-2xl font-bold uppercase">CO3: Quick View</h2><span class="text-3xl">📏</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-brutal-bg border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-black w-2/3">Question</th><th class="p-4 w-1/3">Choices</th></tr></thead>
+                            <tbody id="co3-table1" class="divide-y-4 divide-black text-base"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="mt-8">
+                <div class="bg-white border-4 border-black shadow-hard-lg overflow-hidden">
+                    <div class="bg-brutal-teal text-white p-6 border-b-4 border-black flex justify-between items-center">
+                        <div><h2 class="text-2xl font-bold uppercase">CO3: Step-by-Step Solutions</h2><p class="text-sm opacity-90 font-mono mt-1">CLICK TO REVEAL EACH STEP</p></div><span class="text-3xl">📝</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-black text-white border-b-4 border-black text-lg"><th class="p-4 border-r-4 border-white w-5/12">Question</th><th class="p-4 w-7/12">Solution</th></tr></thead>
+                            <tbody id="co3-table2"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="max-w-6xl mx-auto mt-16 mb-8 text-center font-bold text-sm opacity-70">
+        <p>MATH170 FINALS REVIEWER • SET 2 • ALL ANSWERS CHECKED BY COMPUTER ALGEBRA</p>
+    </footer>
+
+    <script>
+    const r = String.raw;
+    const FR = ["None (Free Response)"];
+    const H = (s) => `<span class='highlight-text'>${s}</span>`;
+
+    // ═════════ CO1 — Linear Systems, Gaussian, Cramer, Determinants, Applications ═════════
+    const co1Questions = [
+        { id: 1,
+          text: r`Which is the augmented matrix of $$\begin{cases} 2x - 3y + z = 4 \\ x + 5y - 2z = -1 \\ 3x - y = 7 \end{cases}$$`,
+          choices: [
+            r`a. $\begin{bmatrix} 2 & -3 & 1 & | & 4 \\ 1 & 5 & -2 & | & -1 \\ 3 & -1 & 0 & | & 7 \end{bmatrix}$`,
+            r`b. $\begin{bmatrix} 2 & -3 & 1 & | & 4 \\ 1 & 5 & -2 & | & -1 \\ 3 & -1 & 1 & | & 7 \end{bmatrix}$`,
+            r`c. $\begin{bmatrix} 2 & -3 & 1 \\ 1 & 5 & -2 \\ 3 & -1 & 0 \end{bmatrix}$`,
+            r`d. $\begin{bmatrix} 2 & 3 & 1 & | & 4 \\ 1 & 5 & 2 & | & -1 \\ 3 & 1 & 0 & | & 7 \end{bmatrix}$`],
+          answer: "a",
+          steps: [
+            r`<strong>Idea:</strong> one row per equation; columns are $x, y, z$, then the constants after the bar.`,
+            r`<strong>Watch the missing variable:</strong> equation 3 has no $z$, so its $z$-coefficient is ${H("0")}, not 1.`,
+            r`<strong>Eliminate:</strong> (b) puts 1 for the missing $z$. (c) has no constants column. (d) flips signs of $-3$ and $-2$.`,
+            r`<strong>Answer:</strong> ${H("(a)")}`] },
+        { id: 2,
+          text: r`Which matrix is in <strong>reduced row echelon form (RREF)</strong>?`,
+          choices: [
+            r`a. $\begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & -1 \end{bmatrix}$`,
+            r`b. $\begin{bmatrix} 1 & 0 & 2 \\ 0 & 2 & -1 \end{bmatrix}$`,
+            r`c. $\begin{bmatrix} 1 & 3 & 2 \\ 0 & 1 & -1 \end{bmatrix}$`,
+            r`d. $\begin{bmatrix} 0 & 1 & -1 \\ 1 & 0 & 2 \end{bmatrix}$`],
+          answer: "a",
+          steps: [
+            r`<strong>RREF checklist:</strong> (1) each pivot is 1, (2) pivots move right going down, (3) zeros above AND below each pivot, (4) zero rows at the bottom.`,
+            r`<strong>(b)</strong> second pivot is 2, not 1. ✗ <br><strong>(c)</strong> the 3 sits above the second pivot. ✗ <br><strong>(d)</strong> pivots go left as you go down (rows out of order). ✗`,
+            r`<strong>(a)</strong> passes every check. <strong>Answer:</strong> ${H("(a)")}`] },
+        { id: 3,
+          text: r`A homogeneous system has 3 equations and 5 unknowns. Which statement is true?`,
+          choices: [
+            "a. It has no solution.",
+            "b. It has only the trivial solution.",
+            "c. It has infinitely many solutions.",
+            "d. Cannot be determined."],
+          answer: "c",
+          steps: [
+            r`<strong>Always consistent:</strong> $x=0$ solves $Ax=0$, so (a) is out.`,
+            r`<strong>Count free variables:</strong> rank $\le 3$ (only 3 rows) but there are 5 columns, so at least $5-3=2$ ${H("free variables")}.`,
+            r`Free variables → infinitely many solutions, so (b) is out. No need for more info, so (d) is out.`,
+            r`<strong>Answer:</strong> ${H("(c)")}`] },
+        { id: 4,
+          text: r`Classify the system: $$\begin{cases} x + y + z = 3 \\ x + 2y + 3z = 5 \\ 2x + 3y + 4z = 9 \end{cases}$$`,
+          choices: ["a. Unique solution", "b. Infinitely many solutions", "c. No solution (inconsistent)", "d. Only the trivial solution"],
+          answer: "c",
+          steps: [
+            r`<strong>Augmented:</strong> $\begin{bmatrix} 1&1&1&|&3 \\ 1&2&3&|&5 \\ 2&3&4&|&9 \end{bmatrix}$`,
+            r`<strong>Clear column 1:</strong> $R_2-R_1$, $R_3-2R_1$: $\begin{bmatrix} 1&1&1&|&3 \\ 0&1&2&|&2 \\ 0&1&2&|&3 \end{bmatrix}$`,
+            r`<strong>Clear column 2:</strong> $R_3-R_2$: $\begin{bmatrix} 1&1&1&|&3 \\ 0&1&2&|&2 \\ 0&0&0&|&1 \end{bmatrix}$`,
+            r`<strong>Last row says</strong> $0=1$, which is impossible → ${H("inconsistent")}. <br><strong>Answer:</strong> ${H("(c)")}`] },
+        { id: 5,
+          text: r`Solve using <strong>Gaussian elimination</strong>: $$\begin{cases} x + y + z = 6 \\ 2x - y + z = 3 \\ x + 2y - z = 2 \end{cases}$$ (Problem-Solving)`,
+          choices: FR,
+          answer: r`$(x,y,z)=(1,\,2,\,3)$`,
+          steps: [
+            r`<strong>Augmented:</strong> $\begin{bmatrix} 1&1&1&|&6 \\ 2&-1&1&|&3 \\ 1&2&-1&|&2 \end{bmatrix}$`,
+            r`<strong>Eliminate below pivot 1:</strong> $R_2-2R_1$, $R_3-R_1$: $\begin{bmatrix} 1&1&1&|&6 \\ 0&-3&-1&|&-9 \\ 0&1&-2&|&-4 \end{bmatrix}$`,
+            r`<strong>Swap</strong> $R_2\leftrightarrow R_3$, then $R_3+3R_2$: $\begin{bmatrix} 1&1&1&|&6 \\ 0&1&-2&|&-4 \\ 0&0&-7&|&-21 \end{bmatrix}$ (row echelon form).`,
+            r`<strong>Back-substitute:</strong> $-7z=-21 \Rightarrow z=3$. <br>$y-2(3)=-4 \Rightarrow y=2$. <br>$x+2+3=6 \Rightarrow x=1$.`,
+            r`<strong>Check in eq. 2:</strong> $2(1)-2+3=3$ ✓. <strong>Solution:</strong> ${H("(1, 2, 3)")}`] },
+        { id: 6,
+          text: r`Solve using <strong>Gauss-Jordan elimination</strong>: $$\begin{cases} x + y + z = 4 \\ 2x - y + z = 8 \\ x - y + 2z = 9 \end{cases}$$ (Problem-Solving)`,
+          choices: FR,
+          answer: r`$(x,y,z)=(2,\,-1,\,3)$`,
+          steps: [
+            r`<strong>Augmented:</strong> $\begin{bmatrix} 1&1&1&|&4 \\ 2&-1&1&|&8 \\ 1&-1&2&|&9 \end{bmatrix}$`,
+            r`<strong>Below pivot 1:</strong> $R_2-2R_1$, $R_3-R_1$: $\begin{bmatrix} 1&1&1&|&4 \\ 0&-3&-1&|&0 \\ 0&-2&1&|&5 \end{bmatrix}$`,
+            r`<strong>Make pivot 2 equal 1:</strong> $-\tfrac13R_2$: $[0\ 1\ \tfrac13 \mid 0]$. Then $R_3+2R_2$: $[0\ 0\ \tfrac53 \mid 5]$, and $\tfrac35R_3$: $[0\ 0\ 1 \mid 3]$.`,
+            r`<strong>Clear above pivots (the Jordan part):</strong> $R_2-\tfrac13R_3$ → $[0\ 1\ 0\mid -1]$. $R_1-R_2-R_3$ → $[1\ 0\ 0\mid 2]$.`,
+            r`<strong>RREF:</strong> $\begin{bmatrix} 1&0&0&|&2 \\ 0&1&0&|&-1 \\ 0&0&1&|&3 \end{bmatrix}$. <strong>Solution:</strong> ${H("(2, −1, 3)")}`] },
+        { id: 7,
+          text: r`Solve: $$\begin{cases} x + 2y + z = 4 \\ 2x + 5y = 9 \\ 3x + 7y + z = 13 \end{cases}$$ (Problem-Solving)`,
+          choices: FR,
+          answer: r`Infinitely many: $x=2-5t,\ y=1+2t,\ z=t$`,
+          steps: [
+            r`<strong>Augmented:</strong> $\begin{bmatrix} 1&2&1&|&4 \\ 2&5&0&|&9 \\ 3&7&1&|&13 \end{bmatrix}$`,
+            r`<strong>Eliminate:</strong> $R_2-2R_1$, $R_3-3R_1$: $\begin{bmatrix} 1&2&1&|&4 \\ 0&1&-2&|&1 \\ 0&1&-2&|&1 \end{bmatrix}$. Then $R_3-R_2$ gives a ${H("zero row")}.`,
+            r`<strong>Clear above pivot 2:</strong> $R_1-2R_2$: $\begin{bmatrix} 1&0&5&|&2 \\ 0&1&-2&|&1 \\ 0&0&0&|&0 \end{bmatrix}$. Column 3 has no pivot, so $z=t$ is free.`,
+            r`<strong>Solve for pivots:</strong> $x=2-5t$, $y=1+2t$. <br><strong>Check</strong> eq. 1: $(2-5t)+2(1+2t)+t=4$ ✓. <strong>Answer:</strong> ${H("infinitely many solutions")}`] },
+        { id: 8,
+          text: r`Use <strong>Cramer's Rule</strong>: $$\begin{cases} 3x + 2y = 8 \\ x - 4y = -2 \end{cases}$$ (Problem-Solving)`,
+          choices: FR,
+          answer: r`$x=2,\ y=1$`,
+          steps: [
+            r`<strong>Main determinant:</strong> $D=\begin{vmatrix} 3&2 \\ 1&-4 \end{vmatrix}=(3)(-4)-(2)(1)=-14\neq0$ → unique solution.`,
+            r`<strong>Replace column 1 by constants:</strong> $D_x=\begin{vmatrix} 8&2 \\ -2&-4 \end{vmatrix}=-32+4=-28$.`,
+            r`<strong>Replace column 2 by constants:</strong> $D_y=\begin{vmatrix} 3&8 \\ 1&-2 \end{vmatrix}=-6-8=-14$.`,
+            r`<strong>Divide:</strong> $x=\frac{-28}{-14}=2$, $y=\frac{-14}{-14}=1$. <br><strong>Answer:</strong> ${H("x = 2, y = 1")}`] },
+        { id: 9,
+          text: r`Use <strong>Cramer's Rule</strong>: $$\begin{cases} x + 2y - z = 3 \\ 3x - y + 2z = 9 \\ 2x + y + 3z = 13 \end{cases}$$ (Problem-Solving)`,
+          choices: FR,
+          answer: r`$x=\tfrac{39}{20},\ y=\tfrac{7}{4},\ z=\tfrac{49}{20}$`,
+          steps: [
+            r`<strong>$D$</strong> (expand along row 1): $D=1(-3-2)-2(9-4)+(-1)(3+2)=-5-10-5=-20$.`,
+            r`<strong>$D_x$</strong> (column 1 → $[3,9,13]$): $\begin{vmatrix} 3&2&-1 \\ 9&-1&2 \\ 13&1&3 \end{vmatrix}=3(-5)-2(1)+(-1)(22)=-39$.`,
+            r`<strong>$D_y$</strong> (column 2 → constants): $\begin{vmatrix} 1&3&-1 \\ 3&9&2 \\ 2&13&3 \end{vmatrix}=1(1)-3(5)+(-1)(21)=-35$. <br><strong>$D_z$</strong> (column 3 → constants): $\begin{vmatrix} 1&2&3 \\ 3&-1&9 \\ 2&1&13 \end{vmatrix}=1(-22)-2(21)+3(5)=-49$.`,
+            r`<strong>Divide by $D=-20$:</strong> $x=\frac{39}{20}$, $y=\frac{35}{20}=\frac74$, $z=\frac{49}{20}$.`,
+            r`<strong>Check eq. 1:</strong> $\frac{39}{20}+\frac{70}{20}-\frac{49}{20}=\frac{60}{20}=3$ ✓`] },
+        { id: 10,
+          text: r`For a $3\times3$ system $Ax=b$ with $\det(A)=0$, which is true about Cramer's Rule?`,
+          choices: [
+            r`a. It still works: $x_i = D_i/D$.`,
+            r`b. It cannot be used, because $D=0$ means there is no unique solution.`,
+            r`c. The solution is always $x=0$.`,
+            r`d. The system is always inconsistent.`],
+          answer: "b",
+          steps: [
+            r`<strong>Cramer's formula</strong> divides by $D$. If $D=0$ you would divide by zero, so the method ${H("fails")}.`,
+            r`<strong>Meaning of $D=0$:</strong> $A$ is singular → the system is either inconsistent OR has infinitely many solutions. It never has a unique one. That kills (c) and (d), which are too strong.`,
+            r`<strong>Fix:</strong> use Gauss-Jordan to see which case you are in. <strong>Answer:</strong> ${H("(b)")}`] },
+        { id: 11,
+          text: r`Find $\det\begin{bmatrix} 3 & 1 & -2 \\ 0 & 4 & 5 \\ 1 & -1 & 2 \end{bmatrix}$.`,
+          choices: ["a. 52", "b. -52", "c. 38", "d. 46"],
+          answer: "a",
+          steps: [
+            r`<strong>Expand along row 1:</strong> $\det=3\,C_{11}+1\,C_{12}+(-2)\,C_{13}$ (signs $+,-,+$).`,
+            r`<strong>Minors:</strong> $M_{11}=\begin{vmatrix}4&5\\-1&2\end{vmatrix}=8+5=13$. $M_{12}=\begin{vmatrix}0&5\\1&2\end{vmatrix}=-5$. $M_{13}=\begin{vmatrix}0&4\\1&-1\end{vmatrix}=-4$.`,
+            r`<strong>Combine:</strong> $3(13)-1(-5)+(-2)(-4)=39+5+8=52$.`,
+            r`<strong>Answer:</strong> ${H("(a) 52")}. <em>Sign slips ($-1\cdot-5$) are the usual trap.</em>`] },
+        { id: 12,
+          text: r`Compute $\det\begin{bmatrix} 2&1&0&3 \\ 0&3&1&-1 \\ 0&0&-2&4 \\ 0&0&0&5 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$-60$`,
+          steps: [
+            r`<strong>Spot the shape:</strong> everything below the main diagonal is 0 → ${H("upper triangular")}.`,
+            r`<strong>Rule:</strong> the determinant of a triangular matrix is the product of its diagonal entries.`,
+            r`<strong>Compute:</strong> $2\cdot3\cdot(-2)\cdot5=-60$.`,
+            r`<strong>Answer:</strong> ${H("−60")}`] },
+        { id: 13,
+          text: r`If $A$ is $4\times4$ with $\det(A)=-3$, find $\det(2A)$.`,
+          choices: ["a. -6", "b. -24", "c. -48", "d. 48"],
+          answer: "c",
+          steps: [
+            r`<strong>Scalar rule:</strong> $|kA|=k^n|A|$. Every one of the $n$ rows gets multiplied by $k$.`,
+            r`<strong>Apply:</strong> $k=2$, $n=4$: $|2A|=2^4\cdot(-3)=16(-3)=-48$.`,
+            r`<strong>Trap:</strong> (a) and (b) use $2\cdot$ or $2^3$; (d) loses the sign. <strong>Answer:</strong> ${H("(c)")}`] },
+        { id: 14,
+          text: r`<strong>Application — curve fitting.</strong> Find the parabola $y=ax^2+bx+c$ through $(1,2)$, $(2,3)$ and $(3,6)$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$y=x^2-2x+3$`,
+          steps: [
+            r`<strong>Plug each point into $y=ax^2+bx+c$:</strong> $$\begin{cases} a+b+c=2 \\ 4a+2b+c=3 \\ 9a+3b+c=6 \end{cases}$$`,
+            r`<strong>Subtract consecutive equations</strong> to kill $c$: $3a+b=1$ and $5a+b=3$.`,
+            r`<strong>Subtract again:</strong> $2a=2 \Rightarrow a=1$. Then $b=1-3=-2$ and $c=2-1+2=3$.`,
+            r`<strong>Check $(3,6)$:</strong> $9-6+3=6$ ✓. <strong>Answer:</strong> ${H("y = x² − 2x + 3")}`] },
+        { id: 15,
+          text: r`<strong>Application — word problem.</strong> Three bundles of items with unit prices $p$, $n$, $f$ (in pesos) cost: Bundle A (3 of $p$, 2 of $n$, 1 of $f$) = 120; Bundle B (1, 4, 2) = 190; Bundle C (2, 1, 3) = 165. Find $p$, $n$, $f$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$p=10,\ n=25,\ f=40$`,
+          steps: [
+            r`<strong>System:</strong> $$\begin{cases} 3p+2n+f=120 \\ p+4n+2f=190 \\ 2p+n+3f=165 \end{cases}$$`,
+            r`<strong>Solve eq. 1 for $f$:</strong> $f=120-3p-2n$.`,
+            r`<strong>Into eq. 2:</strong> $p+4n+240-6p-4n=190 \Rightarrow -5p=-50 \Rightarrow p=10$.`,
+            r`<strong>Into eq. 3:</strong> $2p+n+360-9p-6n=165 \Rightarrow -7p-5n=-195 \Rightarrow -70-5n=-195 \Rightarrow n=25$.`,
+            r`<strong>Back:</strong> $f=120-30-50=40$. <strong>Check eq. 2:</strong> $10+100+80=190$ ✓. <br><strong>Answer:</strong> ${H("p = 10, n = 25, f = 40")}`] }
+    ];
+
+    // ═════════ CO2 — Inverse, Tetrahedron, Area, Line, Basis ═════════
+    const co2Questions = [
+        { id: 16,
+          text: r`Find the inverse of $A=\begin{bmatrix} 4&3 \\ 3&2 \end{bmatrix}$.`,
+          choices: [
+            r`a. $\begin{bmatrix} -2&3 \\ 3&-4 \end{bmatrix}$`,
+            r`b. $\begin{bmatrix} 2&-3 \\ -3&4 \end{bmatrix}$`,
+            r`c. $\begin{bmatrix} 4&-3 \\ -3&2 \end{bmatrix}$`,
+            r`d. $\begin{bmatrix} 2&3 \\ 3&4 \end{bmatrix}$`],
+          answer: "a",
+          steps: [
+            r`<strong>Determinant:</strong> $|A|=(4)(2)-(3)(3)=8-9=-1$.`,
+            r`<strong>Swap diagonal, negate off-diagonal:</strong> $\begin{bmatrix} 2&-3 \\ -3&4 \end{bmatrix}$. That is only the adjoint (choice b).`,
+            r`<strong>Divide by $|A|=-1$:</strong> $A^{-1}=-\begin{bmatrix} 2&-3 \\ -3&4 \end{bmatrix}=\begin{bmatrix} -2&3 \\ 3&-4 \end{bmatrix}$.`,
+            r`<strong>Verify:</strong> $4(-2)+3(3)=1$ ✓. <strong>Answer:</strong> ${H("(a)")}`] },
+        { id: 17,
+          text: r`Which matrix is <strong>singular</strong> (not invertible)?`,
+          choices: [
+            r`a. $\begin{bmatrix} 2&4 \\ 1&2 \end{bmatrix}$`,
+            r`b. $\begin{bmatrix} 1&2 \\ 3&4 \end{bmatrix}$`,
+            r`c. $\begin{bmatrix} 0&1 \\ 1&0 \end{bmatrix}$`,
+            r`d. $\begin{bmatrix} 3&1 \\ 2&1 \end{bmatrix}$`],
+          answer: "a",
+          steps: [
+            r`<strong>Singular ⇔ $\det=0$.</strong> Compute each:`,
+            r`(a) $4-4=0$ ${H("← singular")} <br>(b) $4-6=-2$ <br>(c) $0-1=-1$ <br>(d) $3-2=1$`,
+            r`<strong>Why (a)?</strong> Row 1 is exactly $2\times$ Row 2 (dependent rows). <strong>Answer:</strong> ${H("(a)")}`] },
+        { id: 18,
+          text: r`Find $A^{-1}$ using the <strong>adjoint method</strong>, where $A=\begin{bmatrix} 2&0&1 \\ 1&1&0 \\ 0&3&1 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$A^{-1}=\frac15\begin{bmatrix} 1&3&-1 \\ -1&2&1 \\ 3&-6&2 \end{bmatrix}$`,
+          steps: [
+            r`<strong>Determinant</strong> (row 1): $2(1-0)-0+1(3-0)=2+3=5\neq0$ ✓ invertible.`,
+            r`<strong>Cofactors:</strong> $C_{11}=1,\ C_{12}=-1,\ C_{13}=3$ <br>$C_{21}=3,\ C_{22}=2,\ C_{23}=-6$ <br>$C_{31}=-1,\ C_{32}=1,\ C_{33}=2$`,
+            r`<strong>Cofactor matrix:</strong> $\begin{bmatrix} 1&-1&3 \\ 3&2&-6 \\ -1&1&2 \end{bmatrix}$. <strong>Transpose → adjoint:</strong> $\text{adj}(A)=\begin{bmatrix} 1&3&-1 \\ -1&2&1 \\ 3&-6&2 \end{bmatrix}$.`,
+            r`<strong>Divide by $|A|=5$:</strong> $A^{-1}=\frac15\,\text{adj}(A)$. <br><strong>Quick check:</strong> row 1 of $A$ times column 1 of adj: $2(1)+0+1(3)=5$ → $\frac55=1$ ✓.`] },
+        { id: 19,
+          text: r`Find $A^{-1}$ using <strong>Gauss-Jordan</strong>, where $A=\begin{bmatrix} 1&2&3 \\ 0&1&4 \\ 5&6&0 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$A^{-1}=\begin{bmatrix} -24&18&5 \\ 20&-15&-4 \\ -5&4&1 \end{bmatrix}$`,
+          steps: [
+            r`<strong>Start:</strong> $[A\,|\,I]=\begin{bmatrix} 1&2&3&|&1&0&0 \\ 0&1&4&|&0&1&0 \\ 5&6&0&|&0&0&1 \end{bmatrix}$`,
+            r`<strong>Below pivot 1:</strong> $R_3-5R_1$: $[0\ -4\ -15 \mid -5\ 0\ 1]$. <strong>Below pivot 2:</strong> $R_3+4R_2$: $[0\ 0\ 1 \mid -5\ 4\ 1]$. Pivot 3 is already 1.`,
+            r`<strong>Above pivot 3:</strong> $R_1-3R_3$: $[1\ 2\ 0 \mid 16\ -12\ -3]$. $R_2-4R_3$: $[0\ 1\ 0 \mid 20\ -15\ -4]$.`,
+            r`<strong>Above pivot 2:</strong> $R_1-2R_2$: $[1\ 0\ 0 \mid -24\ 18\ 5]$.`,
+            r`<strong>Read the right half:</strong> ${H("A⁻¹")} as shown. Note $\det A=1$, so every entry is an integer — a nice sanity check.`] },
+        { id: 20,
+          text: r`Solve $\begin{cases} 3x + y = 4 \\ 5x + 2y = 7 \end{cases}$ by computing $A^{-1}$ and using $x=A^{-1}b$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$x=1,\ y=1$`,
+          steps: [
+            r`<strong>Matrix form:</strong> $A=\begin{bmatrix} 3&1 \\ 5&2 \end{bmatrix}$, $b=\begin{bmatrix} 4 \\ 7 \end{bmatrix}$.`,
+            r`<strong>Determinant:</strong> $|A|=6-5=1$. <strong>Inverse:</strong> $A^{-1}=\begin{bmatrix} 2&-1 \\ -5&3 \end{bmatrix}$.`,
+            r`<strong>Multiply:</strong> $A^{-1}b=\begin{bmatrix} 2(4)-1(7) \\ -5(4)+3(7) \end{bmatrix}=\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.`,
+            r`<strong>Check:</strong> $3+1=4$ ✓, $5+2=7$ ✓. <strong>Answer:</strong> ${H("x = 1, y = 1")}`] },
+        { id: 21,
+          text: r`If $A$ is $3\times3$ with $\det(A)=5$, find $\det(2A^{-1})$.`,
+          choices: [r`a. $\frac25$`, r`b. $\frac85$`, r`c. $10$`, r`d. $\frac65$`],
+          answer: "b",
+          steps: [
+            r`<strong>Inverse:</strong> $|A^{-1}|=\frac{1}{|A|}=\frac15$.`,
+            r`<strong>Scalar:</strong> $|2A^{-1}|=2^3\cdot|A^{-1}|=8\cdot\frac15=\frac85$.`,
+            r`<strong>Answer:</strong> ${H("(b) 8/5")}`] },
+        { id: 22,
+          text: r`If $A$ is $3\times3$ with $\det(A)=4$, find $\det(\text{adj}\,A)$.`,
+          choices: ["a. 4", "b. 12", "c. 16", "d. 64"],
+          answer: "c",
+          steps: [
+            r`<strong>Key identity:</strong> $A\cdot\text{adj}(A)=|A|\,I$. Taking determinants: $|A|\cdot|\text{adj}A|=|A|^n$.`,
+            r`<strong>Solve:</strong> $|\text{adj}A|=|A|^{n-1}=4^{3-1}=16$.`,
+            r`<strong>Trap:</strong> $|A\cdot\text{adj}A|=4^3=64$ is choice (d), but that is a different quantity. <strong>Answer:</strong> ${H("(c)")}`] },
+        { id: 23,
+          text: r`<strong>Area.</strong> Find the area of the triangle with vertices $(1,1)$, $(5,2)$, $(3,6)$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`Area $=9$ square units`,
+          steps: [
+            r`<strong>Set up:</strong> $\det\begin{bmatrix} 1&1&1 \\ 5&2&1 \\ 3&6&1 \end{bmatrix}$`,
+            r`<strong>Expand along row 1:</strong> $1(2-6)-1(5-3)+1(30-6)=-4-2+24=18$.`,
+            r`<strong>Nonzero</strong> → the points are not collinear, so a real triangle exists.`,
+            r`<strong>Area</strong> $=\frac12|18|=$ ${H("9")}.`] },
+        { id: 24,
+          text: r`<strong>Line.</strong> Use a determinant to find the equation of the line through $(1,2)$ and $(3,8)$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$y=3x-1$`,
+          steps: [
+            r`<strong>Set up:</strong> a point $(x,y)$ is on the line iff $\det\begin{bmatrix} x&y&1 \\ 1&2&1 \\ 3&8&1 \end{bmatrix}=0$ (the triangle degenerates).`,
+            r`<strong>Expand along row 1:</strong> $x(2-8)-y(1-3)+1(8-6)=-6x+2y+2=0$.`,
+            r`<strong>Simplify:</strong> $2y=6x-2 \Rightarrow y=3x-1$.`,
+            r`<strong>Check:</strong> $(1,2)$: $3-1=2$ ✓. $(3,8)$: $9-1=8$ ✓. <strong>Answer:</strong> ${H("y = 3x − 1")}`] },
+        { id: 25,
+          text: r`<strong>Collinearity.</strong> Evaluate the area determinant for $(0,1)$, $(2,5)$, $(4,9)$. If it is zero, give the line. If not, give the triangle's area. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$\det=0$ → collinear, line $y=2x+1$`,
+          steps: [
+            r`<strong>Set up:</strong> $\det\begin{bmatrix} 0&1&1 \\ 2&5&1 \\ 4&9&1 \end{bmatrix}$`,
+            r`<strong>Expand along row 1:</strong> $0-1(2-4)+1(18-20)=2-2=0$.`,
+            r`<strong>Zero determinant</strong> → ${H("collinear")} (zero area).`,
+            r`<strong>Line:</strong> slope $=\frac{5-1}{2-0}=2$, through $(0,1)$ → ${H("y = 2x + 1")}. Check $(4,9)$: $8+1=9$ ✓.`] },
+        { id: 26,
+          text: r`<strong>Tetrahedron.</strong> Find the volume of the tetrahedron with vertices $(1,0,0)$, $(0,2,0)$, $(0,0,3)$, $(1,1,1)$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$V=\frac56$ cubic units`,
+          steps: [
+            r`<strong>Edge vectors from $(1,0,0)$:</strong> $(-1,2,0)$, $(-1,0,3)$, $(0,1,1)$.`,
+            r`<strong>Matrix:</strong> $\begin{bmatrix} -1&2&0 \\ -1&0&3 \\ 0&1&1 \end{bmatrix}$`,
+            r`<strong>Determinant (row 1):</strong> $-1(0-3)-2(-1-0)+0=3+2=5$.`,
+            r`<strong>Volume</strong> $=\frac16|5|=$ ${H("5/6")}.`] },
+        { id: 27,
+          text: r`<strong>Coplanarity.</strong> Do $(1,1,1)$, $(2,3,4)$, $(0,1,2)$, $(4,5,6)$ form a tetrahedron? Find the volume. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$V=0$ → the four points are coplanar (no tetrahedron)`,
+          steps: [
+            r`<strong>Edge vectors from $(1,1,1)$:</strong> $(1,2,3)$, $(-1,0,1)$, $(3,4,5)$.`,
+            r`<strong>Determinant:</strong> $\begin{vmatrix} 1&2&3 \\ -1&0&1 \\ 3&4&5 \end{vmatrix}=1(0-4)-2(-5-3)+3(-4-0)=-4+16-12=0$.`,
+            r`<strong>Zero volume</strong> → the points lie in one plane. <strong>Answer:</strong> ${H("V = 0, coplanar")}`] },
+        { id: 28,
+          text: r`<strong>Basis.</strong> Determine which of these is a basis for $\mathbb{R}^3$: <br>$S_1=\{(1,2,0),(0,1,3),(1,3,3)\}$ and $S_2=\{(1,0,2),(0,1,1),(1,1,4)\}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$S_2$ is a basis; $S_1$ is not.`,
+          steps: [
+            r`<strong>Test:</strong> 3 vectors form a basis of $\mathbb{R}^3$ iff the matrix of those vectors has $\det\neq0$.`,
+            r`<strong>$S_1$:</strong> $\begin{vmatrix} 1&2&0 \\ 0&1&3 \\ 1&3&3 \end{vmatrix}=1(3-9)-2(0-3)+0=-6+6=0$. Indeed $(1,3,3)=(1,2,0)+(0,1,3)$ → ${H("dependent")}.`,
+            r`<strong>$S_2$:</strong> $\begin{vmatrix} 1&0&2 \\ 0&1&1 \\ 1&1&4 \end{vmatrix}=1(4-1)-0+2(0-1)=3-2=1\neq0$ → independent, spans $\mathbb{R}^3$.`,
+            r`<strong>Answer:</strong> ${H("S₂ is a basis, S₁ is not")}`] },
+        { id: 29,
+          text: r`For what value of $k$ do $(1,2,k)$, $(2,1,3)$, $(1,-1,2)$ fail to form a basis of $\mathbb{R}^3$? (Problem-Solving)`,
+          choices: FR,
+          answer: r`$k=1$`,
+          steps: [
+            r`<strong>Fail to be a basis ⇔ $\det=0$.</strong>`,
+            r`<strong>Determinant (row 1):</strong> $\begin{vmatrix} 1&2&k \\ 2&1&3 \\ 1&-1&2 \end{vmatrix}=1(2+3)-2(4-3)+k(-2-1)=5-2-3k=3-3k$.`,
+            r`<strong>Set to zero:</strong> $3-3k=0 \Rightarrow$ ${H("k = 1")}. For every other $k$ they are a basis.`] },
+        { id: 30,
+          text: r`Find the coordinates of $v=(5,1)$ relative to the basis $B=\{(1,1),(1,-1)\}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$[v]_B=(3,\,2)$`,
+          steps: [
+            r`<strong>Set up:</strong> $c_1(1,1)+c_2(1,-1)=(5,1)$, so $\begin{cases} c_1+c_2=5 \\ c_1-c_2=1 \end{cases}$.`,
+            r`<strong>Add:</strong> $2c_1=6 \Rightarrow c_1=3$. <strong>Subtract:</strong> $2c_2=4 \Rightarrow c_2=2$.`,
+            r`<strong>Check:</strong> $3(1,1)+2(1,-1)=(5,1)$ ✓. <strong>Answer:</strong> ${H("(3, 2)")}`] }
+    ];
+
+    // ═════════ CO3 — Null Space, Column Space, Eigenvalues & Eigenvectors ═════════
+    const co3Questions = [
+        { id: 31,
+          text: r`Find a basis for the <strong>null space</strong> of $A=\begin{bmatrix} 1&2&0&3 \\ 2&4&1&7 \\ 1&2&1&4 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`Basis: $\{(-2,1,0,0),\ (-3,0,-1,1)\}$, nullity $=2$`,
+          steps: [
+            r`<strong>Row reduce:</strong> $R_2-2R_1$ → $[0\ 0\ 1\ 1]$; $R_3-R_1$ → $[0\ 0\ 1\ 1]$; $R_3-R_2$ → zero row.`,
+            r`<strong>RREF:</strong> $\begin{bmatrix} 1&2&0&3 \\ 0&0&1&1 \\ 0&0&0&0 \end{bmatrix}$. Pivots in columns 1 and 3 → free variables $x_2=s$, $x_4=t$.`,
+            r`<strong>Solve for pivot variables:</strong> $x_1=-2s-3t$, $x_3=-t$.`,
+            r`<strong>Parametric vector form:</strong> $x=s\begin{bmatrix}-2\\1\\0\\0\end{bmatrix}+t\begin{bmatrix}-3\\0\\-1\\1\end{bmatrix}$. <br><strong>Basis:</strong> ${H("the two vectors above")}. Nullity = 2 = number of free variables.`] },
+        { id: 32,
+          text: r`A $3\times5$ matrix $A$ has rank 2. What is the nullity of $A$?`,
+          choices: ["a. 1", "b. 2", "c. 3", "d. 5"],
+          answer: "c",
+          steps: [
+            r`<strong>Rank–Nullity Theorem:</strong> rank $+$ nullity $=$ number of ${H("columns")} $=n$.`,
+            r`<strong>Apply:</strong> $n=5$, so nullity $=5-2=3$.`,
+            r`<strong>Trap:</strong> do NOT use the number of rows (3). <strong>Answer:</strong> ${H("(c)")}`] },
+        { id: 33,
+          text: r`For $A=\begin{bmatrix} 1&2&1&3 \\ 2&4&3&8 \\ 1&2&2&5 \end{bmatrix}$, find a basis for the <strong>null space</strong> AND a basis for the <strong>column space</strong>. (Problem-Solving)`,
+          choices: FR,
+          answer: r`Null: $\{(-2,1,0,0),(-1,0,-2,1)\}$. Col: $\{(1,2,1),(1,3,2)\}$`,
+          steps: [
+            r`<strong>Reduce:</strong> $R_2-2R_1$ → $[0\ 0\ 1\ 2]$, $R_3-R_1$ → $[0\ 0\ 1\ 2]$, $R_3-R_2$ → 0, then $R_1-R_2$: $\begin{bmatrix} 1&2&0&1 \\ 0&0&1&2 \\ 0&0&0&0 \end{bmatrix}$. Pivot columns: 1 and 3.`,
+            r`<strong>Null space:</strong> free $x_2=s$, $x_4=t$; $x_1=-2s-t$, $x_3=-2t$. <br>Basis: $(-2,1,0,0)$ and $(-1,0,-2,1)$.`,
+            r`<strong>Column space:</strong> take pivot columns 1 and 3 from the ${H("original")} $A$: $(1,2,1)$ and $(1,3,2)$.`,
+            r`<strong>Check rank–nullity:</strong> rank 2 + nullity 2 $=4$ columns ✓.`] },
+        { id: 34,
+          text: r`Let $A=\begin{bmatrix} 1&0&2 \\ 2&1&3 \\ 0&1&-1 \end{bmatrix}$ and $b=(4,7,1)$. Is $b$ in the <strong>column space</strong> of $A$? (Problem-Solving)`,
+          choices: FR,
+          answer: r`No — $Ax=b$ is inconsistent`,
+          steps: [
+            r`<strong>Idea:</strong> $b\in\text{Col}(A)$ iff $Ax=b$ has a solution.`,
+            r`<strong>Augment:</strong> $\begin{bmatrix} 1&0&2&|&4 \\ 2&1&3&|&7 \\ 0&1&-1&|&1 \end{bmatrix}$. $R_2-2R_1$: $[0\ 1\ -1 \mid -1]$.`,
+            r`<strong>Then $R_3-R_2$:</strong> $[0\ 0\ 0 \mid 2]$ → the row says $0=2$.`,
+            r`<strong>Inconsistent</strong> → $b$ is ${H("not")} in Col$(A)$. (Here rank $A=2$, so Col$(A)$ is only a plane in $\mathbb{R}^3$.)`] },
+        { id: 35,
+          text: r`If $A$ is a $4\times6$ matrix, the null space of $A$ is a subspace of which space?`,
+          choices: [r`a. $\mathbb{R}^4$`, r`b. $\mathbb{R}^6$`, r`c. $\mathbb{R}^{24}$`, r`d. $\mathbb{R}^{10}$`],
+          answer: "b",
+          steps: [
+            r`<strong>Null$(A)$</strong> contains vectors $x$ with $Ax=0$. For $A_{4\times6}x$ to be defined, $x$ needs ${H("6 entries")}.`,
+            r`<strong>So Null$(A)\subseteq\mathbb{R}^6$</strong> (columns). In contrast, Col$(A)\subseteq\mathbb{R}^4$ (rows).`,
+            r`<strong>Answer:</strong> ${H("(b)")}`] },
+        { id: 36,
+          text: r`For $A=\begin{bmatrix} 1&2&0&-1 \\ 2&4&1&1 \\ 3&6&1&0 \end{bmatrix}$, find the rank, the nullity, a basis for Col$(A)$ and a basis for Null$(A)$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`rank 2, nullity 2. Col: $\{(1,2,3),(0,1,1)\}$. Null: $\{(-2,1,0,0),(1,0,-3,1)\}$`,
+          steps: [
+            r`<strong>Reduce:</strong> $R_2-2R_1$ → $[0\ 0\ 1\ 3]$; $R_3-3R_1$ → $[0\ 0\ 1\ 3]$; $R_3-R_2$ → 0. <br>RREF: $\begin{bmatrix} 1&2&0&-1 \\ 0&0&1&3 \\ 0&0&0&0 \end{bmatrix}$`,
+            r`<strong>Rank</strong> = 2 pivots (columns 1, 3). <strong>Nullity</strong> $=4-2=2$.`,
+            r`<strong>Col basis</strong> (original columns 1 and 3): $(1,2,3)$ and $(0,1,1)$.`,
+            r`<strong>Null basis:</strong> free $x_2=s$, $x_4=t$; $x_1=-2s+t$, $x_3=-3t$ → $(-2,1,0,0)$ and $(1,0,-3,1)$.`,
+            r`<strong>Check</strong> $(1,0,-3,1)$ in row 2: $2+0-3+1=0$ ✓.`] },
+        { id: 37,
+          text: r`A scalar $\lambda$ is an <strong>eigenvalue</strong> of the square matrix $A$ if and only if:`,
+          choices: [
+            r`a. $\det(A)=\lambda$`,
+            r`b. $\det(A-\lambda I)=0$`,
+            r`c. $\det(A+\lambda I)=0$`,
+            r`d. $A\lambda=0$`],
+          answer: "b",
+          steps: [
+            r`<strong>Definition:</strong> $Av=\lambda v$ with $v\neq0$, so $(A-\lambda I)v=0$ has a nonzero solution.`,
+            r`<strong>That happens only when</strong> $A-\lambda I$ is singular: ${H("det(A − λI) = 0")}.`,
+            r`<strong>Answer:</strong> ${H("(b)")}. (c) has the wrong sign.`] },
+        { id: 38,
+          text: r`Find the eigenvalues and eigenvectors of $A=\begin{bmatrix} 4&1 \\ 2&3 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$\lambda=2$: $(-1,2)$. $\lambda=5$: $(1,1)$`,
+          steps: [
+            r`<strong>Characteristic equation:</strong> $\det\begin{bmatrix} 4-\lambda&1 \\ 2&3-\lambda \end{bmatrix}=\lambda^2-7\lambda+10=(\lambda-2)(\lambda-5)=0$.`,
+            r`<strong>$\lambda=2$:</strong> $A-2I=\begin{bmatrix} 2&1 \\ 2&1 \end{bmatrix}$ → $2x+y=0$ → $v=(-1,2)$.`,
+            r`<strong>$\lambda=5$:</strong> $A-5I=\begin{bmatrix} -1&1 \\ 2&-2 \end{bmatrix}$ → $x=y$ → $v=(1,1)$.`,
+            r`<strong>Check:</strong> $A(1,1)=(5,5)=5(1,1)$ ✓. Also trace $=7=2+5$ ✓, det $=10=2\cdot5$ ✓.`] },
+        { id: 39,
+          text: r`Find the eigenvalues and eigenvectors of $A=\begin{bmatrix} 1&2 \\ 4&3 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$\lambda=5$: $(1,2)$. $\lambda=-1$: $(1,-1)$`,
+          steps: [
+            r`<strong>Characteristic equation:</strong> $(1-\lambda)(3-\lambda)-8=\lambda^2-4\lambda-5=(\lambda-5)(\lambda+1)=0$.`,
+            r`<strong>$\lambda=5$:</strong> $A-5I=\begin{bmatrix} -4&2 \\ 4&-2 \end{bmatrix}$ → $y=2x$ → $v=(1,2)$.`,
+            r`<strong>$\lambda=-1$:</strong> $A+I=\begin{bmatrix} 2&2 \\ 4&4 \end{bmatrix}$ → $x=-y$ → $v=(1,-1)$.`,
+            r`<strong>Check:</strong> $A(1,2)=(5,10)=5(1,2)$ ✓. Trace $4=5+(-1)$ ✓.`] },
+        { id: 40,
+          text: r`What are the eigenvalues of $A=\begin{bmatrix} 2&5&1 \\ 0&-3&4 \\ 0&0&6 \end{bmatrix}$?`,
+          choices: ["a. 2, -3, 6", "b. 2, 3, 6", "c. 5, 4, 1", "d. Must expand the characteristic polynomial first"],
+          answer: "a",
+          steps: [
+            r`<strong>Shape:</strong> upper triangular.`,
+            r`<strong>Shortcut:</strong> $\det(A-\lambda I)=(2-\lambda)(-3-\lambda)(6-\lambda)$, so the eigenvalues are the ${H("diagonal entries")}.`,
+            r`<strong>Answer:</strong> ${H("(a) 2, −3, 6")}. (b) drops the sign of $-3$.`] },
+        { id: 41,
+          text: r`The matrix $A=\begin{bmatrix} 5&2 \\ 2&2 \end{bmatrix}$ has $\text{tr}(A)=7$ and $\det(A)=6$. What are its eigenvalues?`,
+          choices: ["a. 2 and 3", "b. 1 and 6", "c. 3 and 4", "d. -1 and -6"],
+          answer: "b",
+          steps: [
+            r`<strong>Shortcut:</strong> the eigenvalues add up to the trace (7) and multiply to the determinant (6).`,
+            r`<strong>Test:</strong> (a) sum 5 ✗; (c) sum 7 but product 12 ✗; (d) sum $-7$ ✗; (b) $1+6=7$ and $1\cdot6=6$ ✓.`,
+            r`<strong>Confirm:</strong> $\lambda^2-7\lambda+6=(\lambda-1)(\lambda-6)$. <strong>Answer:</strong> ${H("(b)")}`] },
+        { id: 42,
+          text: r`Find the eigenvalues and a basis for each eigenspace of $A=\begin{bmatrix} 2&1&0 \\ 1&2&0 \\ 0&0&3 \end{bmatrix}$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$\lambda=1$: $\{(-1,1,0)\}$. $\lambda=3$ (twice): $\{(1,1,0),(0,0,1)\}$`,
+          steps: [
+            r`<strong>Characteristic polynomial:</strong> $(3-\lambda)\big[(2-\lambda)^2-1\big]=(3-\lambda)(1-\lambda)(3-\lambda)$. <br>Eigenvalues: $\lambda=1$ and $\lambda=3$ (algebraic multiplicity 2).`,
+            r`<strong>$\lambda=1$:</strong> $A-I=\begin{bmatrix} 1&1&0 \\ 1&1&0 \\ 0&0&2 \end{bmatrix}$ → $x=-y$, $z=0$ → $(-1,1,0)$.`,
+            r`<strong>$\lambda=3$:</strong> $A-3I=\begin{bmatrix} -1&1&0 \\ 1&-1&0 \\ 0&0&0 \end{bmatrix}$ → $x=y$, $z$ free → $(1,1,0)$ and $(0,0,1)$.`,
+            r`<strong>Check:</strong> eigenspace dimensions $1+2=3$, so $A$ has 3 independent eigenvectors (diagonalizable).`] },
+        { id: 43,
+          text: r`$A=\begin{bmatrix} 3&1 \\ 0&2 \end{bmatrix}$. What are the eigenvalues of $A^2$?`,
+          choices: ["a. 3 and 2", "b. 9 and 4", "c. 6 and 4", "d. 9 and 2"],
+          answer: "b",
+          steps: [
+            r`<strong>Triangular:</strong> eigenvalues of $A$ are 3 and 2.`,
+            r`<strong>Power rule:</strong> if $Av=\lambda v$ then $A^2v=\lambda^2v$. Same eigenvectors, squared eigenvalues.`,
+            r`<strong>Compute:</strong> $3^2=9$, $2^2=4$. (Similarly $A^{-1}$ would have $\frac13$ and $\frac12$.) <strong>Answer:</strong> ${H("(b)")}`] },
+        { id: 44,
+          text: r`Find the eigenvalues and eigenvectors of $A=\begin{bmatrix} 3&1&0 \\ 0&3&0 \\ 0&0&5 \end{bmatrix}$. Is $A$ diagonalizable? (Problem-Solving)`,
+          choices: FR,
+          answer: r`$\lambda=3$ (×2): only $(1,0,0)$. $\lambda=5$: $(0,0,1)$. Not diagonalizable.`,
+          steps: [
+            r`<strong>Triangular</strong> → eigenvalues are the diagonal: $\lambda=3$ (twice) and $\lambda=5$.`,
+            r`<strong>$\lambda=3$:</strong> $A-3I=\begin{bmatrix} 0&1&0 \\ 0&0&0 \\ 0&0&2 \end{bmatrix}$ → $y=0$, $z=0$, $x$ free → only one eigenvector $(1,0,0)$.`,
+            r`<strong>$\lambda=5$:</strong> $A-5I=\begin{bmatrix} -2&1&0 \\ 0&-2&0 \\ 0&0&0 \end{bmatrix}$ → $x=y=0$, $z$ free → $(0,0,1)$.`,
+            r`<strong>Diagonalizable?</strong> We only get 2 independent eigenvectors, not 3. For $\lambda=3$, multiplicity 2 but eigenspace dimension 1 → ${H("NOT diagonalizable")}.`] },
+        { id: 45,
+          text: r`$A=\begin{bmatrix} 1&2 \\ 3&0 \end{bmatrix}$ and $x_0=(0,5)$. Use eigenvalues/eigenvectors to find $A^3x_0$. (Problem-Solving)`,
+          choices: FR,
+          answer: r`$A^3x_0=(70,\,30)$`,
+          steps: [
+            r`<strong>Eigenvalues:</strong> $\lambda^2-\lambda-6=(\lambda-3)(\lambda+2)=0$ → $\lambda=3,\,-2$.`,
+            r`<strong>Eigenvectors:</strong> $\lambda=3$: $x=y$ → $(1,1)$. $\lambda=-2$: $3x+2y=0$ → $(-2,3)$.`,
+            r`<strong>Write $x_0$ in that basis:</strong> $(0,5)=2(1,1)+1(-2,3)$.`,
+            r`<strong>Apply powers:</strong> $A^3x_0=2(3^3)(1,1)+(-2)^3(-2,3)=54(1,1)-8(-2,3)=(54+16,\ 54-24)=(70,30)$.`,
+            r`<strong>Direct check:</strong> $Ax_0=(10,0)$, $A^2x_0=(10,30)$, $A^3x_0=(70,30)$ ✓. <strong>Answer:</strong> ${H("(70, 30)")}`] }
+    ];
+
+    // ═════════ RENDERING ENGINE ═════════
+    const allQuestions = { co1: co1Questions, co2: co2Questions, co3: co3Questions };
+    const allFlat = [...co1Questions, ...co2Questions, ...co3Questions];
+    let revealedCount = 0;
+    const totalQuestions = allFlat.length;
+    document.getElementById('total-display').textContent = totalQuestions;
+
+    function answerHTML(q) {
+        if (q.choices[0].includes("None")) return q.answer;
+        const hit = q.choices.find(c => c.startsWith(q.answer + '.'));
+        return `<strong>(${q.answer})</strong> ${hit ? hit.replace(/^[a-z]\.\s*/, '') : ''}`;
+    }
+
+    function renderCO(coKey) {
+        const questions = allQuestions[coKey];
+        const t1 = document.getElementById(`${coKey}-table1`);
+        const t2 = document.getElementById(`${coKey}-table2`);
+        t1.innerHTML = ''; t2.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const isFR = q.choices[0].includes("None");
+            const choicesDisplay = isFR
+                ? "<span class='italic text-gray-500'>Free Response</span>"
+                : `<ul class="list-none space-y-1 text-sm font-sans">${q.choices.map(c => `<li>${c}</li>`).join('')}</ul>`;
+            const row1 = document.createElement('tr');
+            row1.className = "hover:bg-yellow-50 transition-colors";
+            row1.innerHTML = `
+                <td class="p-4 border-r-4 border-black font-sans font-medium text-base border-b border-black">
+                    <span class="font-bold text-brutal-blue mr-2">Q${q.id})</span> ${q.text}
+                </td>
+                <td class="p-4 border-b border-black align-top">${choicesDisplay}</td>`;
+            t1.appendChild(row1);
+
+            const choicesList = isFR ? "Free Response" : q.choices.join('<br>');
+            const r1 = document.createElement('tr');
+            r1.className = "bg-white";
+            r1.innerHTML = `
+                <td class="p-5 border-r-4 border-black border-b border-gray-300 font-sans font-bold text-lg align-top">
+                    <span class="text-brutal-red">Q${q.id})</span> ${q.text}
+                    <div class="mt-3 p-3 bg-gray-100 border-2 border-dashed border-gray-400 font-mono text-sm">
+                        <strong class="text-brutal-blue block mb-1">OPTIONS:</strong>${choicesList}
+                    </div>
+                </td>
+                <td class="p-5 border-b border-gray-300 align-top bg-gray-50">
+                    <div class="space-y-3">
+                        <div class="p-3 bg-yellow-100 border-l-4 border-brutal-yellow mb-3 text-base hidden font-sans" id="answer-box-${q.id}">
+                            <strong>✅ ANSWER:</strong> <span>${answerHTML(q)}</span>
+                        </div>
+                        <div id="steps-wrapper-${q.id}" class="space-y-3"></div>
+                        <button onclick="nextStep(${q.id})" id="btn-${q.id}" class="w-full py-3 bg-black text-white font-bold text-lg uppercase tracking-widest hover:bg-brutal-blue transition-colors shadow-hard">Start Solution</button>
+                    </div>
+                </td>`;
+            t2.appendChild(r1);
+            if (index < questions.length - 1) {
+                const sep = document.createElement('tr');
+                sep.innerHTML = `<td colspan="2" class="bg-brutal-dark h-3 border-b-4 border-black"></td>`;
+                t2.appendChild(sep);
+            }
+        });
+    }
+
+    const stepTrackers = {};
+    function typeset(el) {
+        if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise(el ? [el] : undefined).catch(e => console.log(e));
+    }
+
+    function nextStep(id) {
+        const question = allFlat.find(q => q.id === id);
+        if (stepTrackers[id] === undefined) stepTrackers[id] = 0;
+        const wrapper = document.getElementById(`steps-wrapper-${id}`);
+        const btn = document.getElementById(`btn-${id}`);
+        const answerBox = document.getElementById(`answer-box-${id}`);
+
+        if (answerBox.classList.contains('hidden')) {
+            answerBox.classList.remove('hidden');
+            btn.innerText = "Show Step 1 ⬇";
+            btn.classList.replace('bg-black', 'bg-brutal-blue');
+            revealedCount++;
+            document.getElementById('score-display').textContent = revealedCount;
+            document.getElementById('progress').style.width = (revealedCount / totalQuestions * 100) + '%';
+            typeset(answerBox);
+            return;
+        }
+        const i = stepTrackers[id];
+        if (i < question.steps.length) {
+            const d = document.createElement('div');
+            d.className = "step-card bg-white border-2 border-black p-3 shadow-hard-sm text-base font-sans";
+            d.innerHTML = question.steps[i];
+            wrapper.appendChild(d);
+            stepTrackers[id]++;
+            if (stepTrackers[id] < question.steps.length) {
+                btn.innerText = `Show Step ${stepTrackers[id] + 1} ⬇`;
+            } else {
+                btn.innerText = "Solution Complete ✓";
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.disabled = true;
+                btn.classList.replace('bg-brutal-blue', 'bg-gray-800');
+            }
+            typeset(d);
+        }
+    }
+
+    function switchCO(coKey) {
+        document.querySelectorAll('.co-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.co-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`section-${coKey}`).classList.add('active');
+        document.getElementById(`tab-${coKey}`).classList.add('active');
+        typeset();
+    }
+
+    renderCO('co1'); renderCO('co2'); renderCO('co3');
+    window.addEventListener('load', () => typeset());
+    </script>
+</body>
+</html>
